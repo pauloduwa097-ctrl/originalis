@@ -328,87 +328,42 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-    const SUPABASE_URL = "https://mrzsmkrgwlmaloljvfsr.supabase.co";
+const SUPABASE_URL = "https://mrzsmkrgwlmaloljvfsr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_byx5TY7DH3itEV_ceACLVw_eBzFOeKj";
 
-    const SUPABASE_KEY = "sb_publishable_byx5TY7DH3itEV_ceACLVw_eBzFOeKj";
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
-    const supabaseClient = window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
+const form = document.querySelector("form");
 
-    const form = document.querySelector("form");
+form.addEventListener("submit", async function(event) {
+    event.preventDefault();
 
-    form.addEventListener("submit", async function(event) {
-        event.preventDefault();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+    if (!email || !password) {
+        alert("Veuillez remplir tous les champs.");
+        return;
+    }
 
-        if (!email || !password) {
-            alert("Veuillez remplir tous les champs.");
-            return;
-        }
+    const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
 
-        const { data, error } =
-            await supabaseClient.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
+    if (error) {
+        alert("Erreur de connexion : " + error.message);
+        return;
+    }
 
-        if (error) {
-            alert("Erreur de connexion : " + error.message);
-            return;
-        }
+    alert("Connexion réussie ! Bienvenue sur Originalis.");
 
-        const userName =
-            data.user?.user_metadata?.nom || "Paul ODUWA";
-
-        const welcome = document.createElement("div");
-
-        welcome.innerHTML = `
-            <div class="welcome-overlay">
-                <div class="welcome-card">
-
-                    <div class="welcome-icon">✓</div>
-
-                    <p class="welcome-small">
-                        CONNEXION RÉUSSIE
-                    </p>
-
-                    <h2>
-                        Bienvenue sur<br>
-                        <span>Originalis</span>
-                    </h2>
-
-                    <div class="welcome-line"></div>
-
-                    <p class="welcome-name">
-                        ${userName}
-                    </p>
-
-                    <p class="welcome-text">
-                        Votre espace personnel est maintenant accessible.
-                        Profitez pleinement des fonctionnalités
-                        d’Originalis pour vos travaux.
-                    </p>
-
-                    <button id="continueButton">
-                        Accéder à mon espace →
-                    </button>
-
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(welcome);
-
-        document
-            .getElementById("continueButton")
-            .addEventListener("click", function() {
-                window.location.href = "index.html";
-            });
-    });
+    window.location.href = "index.html";
+});
 </script>
 </body>
 </html>
