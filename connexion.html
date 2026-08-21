@@ -360,6 +360,55 @@
             alert("Erreur de connexion : " + error.message);
             return;
         }
+
+        const userName =
+            data.user?.user_metadata?.nom || "Paul ODUWA";
+
+        const welcome = document.createElement("div");
+
+        welcome.innerHTML = `
+            <div class="welcome-overlay">
+                <div class="welcome-card">
+
+                    <div class="welcome-icon">✓</div>
+
+                    <p class="welcome-small">
+                        CONNEXION RÉUSSIE
+                    </p>
+
+                    <h2>
+                        Bienvenue sur<br>
+                        <span>Originalis</span>
+                    </h2>
+
+                    <div class="welcome-line"></div>
+
+                    <p class="welcome-name">
+                        ${userName}
+                    </p>
+
+                    <p class="welcome-text">
+                        Votre espace personnel est maintenant accessible.
+                        Profitez pleinement des fonctionnalités
+                        d’Originalis pour vos travaux.
+                    </p>
+
+                    <button id="continueButton">
+                        Accéder à mon espace →
+                    </button>
+
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(welcome);
+
+        document
+            .getElementById("continueButton")
+            .addEventListener("click", function() {
+                window.location.href = "index.html";
+            });
+    });
 </script>
 </body>
 </html>
