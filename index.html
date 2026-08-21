@@ -390,5 +390,33 @@
     <p>Mon Paul</p>
     <p>Contact : +243 815153709</p>
 </footer>
+ <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://mrzsmkrgwlmaloljvfsr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_byx5TY7DH3itEV_ceACLVw_eBzFOeKj";
+
+const supabaseClient = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+async function verifierConnexion() {
+
+    const {
+        data: { session }
+    } = await supabaseClient.auth.getSession();
+
+    const authLinks = document.getElementById("authLinks");
+
+    if (session) {
+        authLinks.style.display = "none";
+    } else {
+        authLinks.style.display = "inline-flex";
+    }
+}
+
+verifierConnexion();
+</script>   
 </body>
 </html>
