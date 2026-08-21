@@ -189,6 +189,90 @@
             }
         }
     </style>
+    <style>
+
+.side-menu {
+    position: fixed;
+    top: 0;
+    left: -340px;
+    width: 320px;
+    height: 100vh;
+    background: white;
+    z-index: 10000;
+    box-shadow: 5px 0 25px rgba(0,0,0,0.18);
+    transition: left 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.side-menu.active {
+    left: 0;
+}
+
+.side-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px;
+    border-bottom: 1px solid #eee;
+}
+
+.side-menu-header h2 {
+    font-size: 22px;
+}
+
+#closeMenu {
+    border: none;
+    background: transparent;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.side-menu-content {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.side-menu-content a,
+#logoutButton {
+    display: block;
+    width: 100%;
+    padding: 14px 12px;
+    margin-bottom: 5px;
+    border: none;
+    background: transparent;
+    color: #172033;
+    text-decoration: none;
+    text-align: left;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.side-menu-content a:hover,
+#logoutButton:hover {
+    background: #f1f3f6;
+}
+
+#logoutButton {
+    margin-top: 15px;
+    color: #b42318;
+}
+
+.side-menu-footer {
+    padding: 20px;
+    border-top: 1px solid #eee;
+    text-align: center;
+    font-size: 14px;
+}
+
+.side-menu-footer strong {
+    display: block;
+    margin: 5px 0;
+}
+
+</style>
 </head>
 
 <body>
@@ -214,6 +298,46 @@
         <a href="connexion.html">Se connecter</a>
     </span>
 </nav>
+        <div id="sideMenu" class="side-menu">
+
+    <div class="side-menu-header">
+        <h2>Mon espace</h2>
+        <button id="closeMenu" type="button">×</button>
+    </div>
+
+    <div class="side-menu-content">
+
+        <a href="#">👤 Mon profil</a>
+
+        <a href="#">📷 Changer ma photo de profil</a>
+
+        <a href="#">✏️ Modifier mes informations</a>
+
+        <a href="#">📚 Mes analyses</a>
+
+        <a href="#">🔍 Mes vérifications</a>
+
+        <a href="#">🕘 Historique</a>
+
+        <a href="tarifs.html">💳 Mon abonnement</a>
+
+        <a href="#">⚙️ Paramètres</a>
+
+        <a href="aide.html">🆘 Centre d'aide</a>
+
+        <button id="logoutButton" type="button">
+            🚪 Se déconnecter
+        </button>
+
+    </div>
+
+    <div class="side-menu-footer">
+        <p>Besoin d'aide ?</p>
+        <strong>Contactez Mon Paul</strong>
+        <p>+243 815153709</p>
+    </div>
+
+</div>
     </header>
 
 
@@ -418,5 +542,18 @@ async function verifierConnexion() {
 
 verifierConnexion();
 </script>   
+    <script>
+const menuButton = document.getElementById("menuButton");
+const sideMenu = document.getElementById("sideMenu");
+const closeMenu = document.getElementById("closeMenu");
+
+menuButton.addEventListener("click", function() {
+    sideMenu.classList.add("active");
+});
+
+closeMenu.addEventListener("click", function() {
+    sideMenu.classList.remove("active");
+});
+</script>
 </body>
 </html>
