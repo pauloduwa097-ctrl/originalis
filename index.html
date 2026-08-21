@@ -309,8 +309,14 @@
 
         <a href="#">👤 Mon profil</a>
 
-        <a href="#">📷 Changer ma photo de profil</a>
+       <a href="#" id="changePhotoButton">📷 Changer ma photo de profil</a>
 
+<input
+    type="file"
+    id="profilePhotoInput"
+    accept="image/*"
+    style="display: none;"
+>
         <a href="#">✏️ Modifier mes informations</a>
 
         <a href="#">📚 Mes analyses</a>
@@ -553,6 +559,80 @@ menuButton.addEventListener("click", function() {
 
 closeMenu.addEventListener("click", function() {
     sideMenu.classList.remove("active");
+});
+</script>
+    <script>
+const changePhotoButton = document.getElementById("changePhotoButton");
+const profilePhotoInput = document.getElementById("profilePhotoInput");
+
+changePhotoButton.addEventListener("click", function(event) {
+    event.preventDefault();
+    profilePhotoInput.click();
+});
+
+profilePhotoInput.addEventListener("change", async function() {
+
+    const file = profilePhotoInput.files[0];
+
+    if (!file) {
+        return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+        alert("Veuillez sélectionner une image.");
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+        alert("La photo ne doit pas dépasser 5 Mo.");
+        return;
+    }
+
+    const {
+        data: { user }
+    } = await supabaseClient.auth.getUser();
+
+    if (!user) {
+        alert("Vous devez être connecté.");
+        return;
+    }
+
+    const filePath = user.id + "." + file.name.split(".").pop();
+
+    const { error: uploadError } =
+        await supabaseClient.storage
+            .from("avatars")
+            .upload(filePath, file, {
+                upsert: true
+            });
+
+    if (uploadError) {
+        alert("Erreur lors de l'envoi : " + uploadError.message);
+        return;
+    }
+
+    const { data: publicUrlData } =
+        supabaseClient.storage
+            .from("avatars")
+            .getPublicUrl(filePath);
+
+    const photoUrl = publicUrlData.publicUrl;
+
+    const { error: updateError } =
+        await supabaseClient.auth.updateUser({
+            data: {
+                avatar_url: photoUrl
+            }
+        });
+
+    if (updateError) {
+        alert("La photo a été envoyée, mais le profil n'a pas pu être mis à jour.");
+        return;
+    }
+
+    alert("Photo de profil mise à jour avec succès !");
+
+    location.reload();
 });
 </script>
 </body>
