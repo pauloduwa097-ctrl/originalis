@@ -752,33 +752,82 @@ function lireFichier(fichier) {
 /* =========================
    NETTOYER LE TEXTE
 ========================= */
-
 function nettoyerTexte(texte) {
 
     return texte
-
         .toLowerCase()
-
         .normalize("NFD")
-
-        .replace(
-            /[\u0300-\u036f]/g,
-            ""
-        )
-
-        .replace(
-            /[.,!?;:()[\]{}"']/g,
-            ""
-        )
-
-        .replace(
-            /\s+/g,
-            " "
-        )
-
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[.,!?;:()[\]{}"']/g, " ")
+        .replace(/\s+/g, " ")
         .trim();
 
 }
+
+
+/* =========================
+   MOTS VIDES À IGNORER
+========================= */
+
+const motsCourants = new Set([
+
+    "le",
+    "la",
+    "les",
+    "un",
+    "une",
+    "des",
+    "du",
+    "de",
+    "d",
+    "et",
+    "ou",
+    "a",
+    "au",
+    "aux",
+    "en",
+    "dans",
+    "sur",
+    "pour",
+    "par",
+    "avec",
+    "sans",
+    "ce",
+    "cet",
+    "cette",
+    "ces",
+    "est",
+    "sont",
+    "qui",
+    "que",
+    "quoi",
+    "dont",
+    "se",
+    "sa",
+    "son",
+    "ses",
+    "leur",
+    "leurs",
+    "il",
+    "elle",
+    "ils",
+    "elles",
+    "nous",
+    "vous",
+    "je",
+    "tu",
+    "on",
+    "ne",
+    "pas",
+    "plus",
+    "mais",
+    "comme",
+    "aussi",
+    "très",
+    "être",
+    "avoir"
+
+]);
 
 
 /* =========================
@@ -790,7 +839,6 @@ function obtenirMots(texte) {
     const texteNettoye =
         nettoyerTexte(texte);
 
-
     if (
         texteNettoye.length === 0
     ) {
@@ -799,14 +847,14 @@ function obtenirMots(texte) {
 
     }
 
-
     return texteNettoye
-
-        .split(" ")
-
+        .split(/\s+/)
         .filter(function(mot) {
 
-            return mot.length > 2;
+            return (
+                mot.length > 2 &&
+                !motsCourants.has(mot)
+            );
 
         });
 
@@ -821,15 +869,9 @@ function obtenirGroupes(mots, taille) {
 
     const groupes = [];
 
-
-    if (
-        mots.length < taille
-    ) {
-
+    if (mots.length < taille) {
         return groupes;
-
     }
-
 
     for (
         let i = 0;
@@ -838,24 +880,216 @@ function obtenirGroupes(mots, taille) {
     ) {
 
         groupes.push(
-
             mots
-                .slice(
-                    i,
-                    i + taille
-                )
+                .slice(i, i + taille)
                 .join(" ")
-
         );
 
     }
 
-
     return groupes;
+}
+
+
+/* =========================
+   CALCUL DES CORRESPONDANCES
+========================= */
+
+function trouverCorrespondances(motsA, motsB) {
+
+    const correspondances = [];
+
+    /* Groupes de 2 mots */
+
+    const groupesA2 =
+        obtenirGroupes(motsA, 2);
+
+    const groupesB2 =
+        new Set(
+            obtenirGroupes(motsB, 2)
+        );
+
+
+    /* Groupes de 3 mots */
+
+    const groupesA3 =
+        obtenirGroupes(motsA, 3);
+
+    const groupesB3 =
+        new Set(
+            obtenirGroupes(motsB, 3)
+        );
+
+
+    /* Groupes de 4 mots */
+
+    const groupesA4 =
+        obtenirGroupes(motsA, 4);
+
+    const groupesB4 =
+        new Set(
+            obtenirGroupes(motsB, 4)
+        );
+
+
+    /* Correspondances de 4 mots */
+
+    groupesA4.forEach(function(groupe) {
+
+        if (groupesB4.has(groupe)) {
+
+            correspondances.push({
+                texte: groupe,
+                poids: 4
+            });
+
+        }
+
+    });
+
+
+    /* Correspondances de 3 mots */
+
+    groupesA3.forEach(function(groupe) {
+
+        if (
+            groupesB3.has(groupe) &&
+            !correspondances.some(
+                function(item) {
+                    return item.texte === groupe;
+                }
+            )
+        ) {
+
+            correspondances.push({
+                texte: groupe,
+                poids: 3
+            });
+
+        }
+
+    });
+
+
+    /* Correspondances de 2 mots */
+
+    groupesA2.forEach(function(groupe) {
+
+        if (
+            groupesB2.has(groupe) &&
+            !correspondances.some(
+                function(item) {
+
+                    return item.texte === groupe;
+
+                }
+            )
+        ) {
+
+            correspondances.push({
+                texte: groupe,
+                poids: 2
+            });
+
+        }
+
+    });
+
+
+    return correspondances;
 
 }
 
 
+/* =========================
+   CALCUL DU SCORE
+========================= */
+
+function calculerSimilarite(
+    motsA,
+    motsB,
+    correspondances
+) {
+
+    if (
+        motsA.length === 0 ||
+        motsB.length === 0
+    ) {
+
+        return 0;
+
+    }
+
+
+    /*
+       Poids des correspondances :
+       4 mots = très forte
+       3 mots = forte
+       2 mots = moyenne
+    */
+
+    let pointsCommuns = 0;
+
+
+    correspondances.forEach(
+        function(correspondance) {
+
+            pointsCommuns +=
+                correspondance.poids;
+
+        }
+    );
+
+
+    /*
+       On compare avec la taille
+       du document le plus petit.
+    */
+
+    const base =
+        Math.min(
+            motsA.length,
+            motsB.length
+        );
+
+
+    let score =
+        (pointsCommuns / base) * 100;
+
+
+    /*
+       Petite correction pour éviter
+       qu'un document très court donne
+       un résultat excessif.
+    */
+
+    if (
+        motsA.length < 20 ||
+        motsB.length < 20
+    ) {
+
+        score *= 0.75;
+
+    }
+
+
+    /*
+       Limite entre 0 et 100.
+    */
+
+    score =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                score
+            )
+        );
+
+
+    return Math.round(score);
+
+}
 /* =========================
    COMPARER LES DOCUMENTS
 ========================= */
