@@ -192,6 +192,177 @@
         font-size: 13px;
     }
 }
+        /* ============================= */
+/* RAPPORT CENTRAL ORIGINALIS     */
+/* ============================= */
+
+#rapportOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 9990;
+}
+
+#resultat {
+    position: relative;
+    width: 100%;
+    max-width: 650px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 22px;
+    padding: 35px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    text-align: center;
+    animation: apparitionRapport 0.25s ease;
+}
+
+@keyframes apparitionRapport {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+#fermerRapport {
+    position: absolute;
+    top: 15px;
+    right: 18px;
+    width: 38px;
+    height: 38px;
+    border: none;
+    border-radius: 50%;
+    background: #f1f3f6;
+    color: #172033;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+#fermerRapport:hover {
+    background: #e5e7eb;
+}
+
+.rapport-icon {
+    font-size: 45px;
+    margin-bottom: 10px;
+}
+
+#resultat h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.rapport-details {
+    color: #5d6678;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.score-container {
+    width: 130px;
+    height: 130px;
+    margin: 20px auto;
+    border-radius: 50%;
+    background: #f5f7fb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 8px solid #173f8a;
+}
+
+#score {
+    font-size: 27px;
+    font-weight: bold;
+    color: #173f8a;
+}
+
+.score-label {
+    font-size: 17px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+#passages {
+    display: none;
+    margin-top: 25px;
+    text-align: left;
+}
+
+#passages h3 {
+    color: #173f8a;
+    margin-bottom: 15px;
+}
+
+#listePassages {
+    background: #f5f7fb;
+    padding: 18px;
+    border-radius: 12px;
+    line-height: 1.7;
+}
+
+.rapport-warning {
+    margin-top: 25px;
+    padding: 15px;
+    background: #fff8e6;
+    border-radius: 10px;
+    color: #6b7280;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+#fermerRapportBas {
+    margin-top: 25px;
+}
+
+@media (max-width: 600px) {
+
+    #rapportOverlay {
+        padding: 12px;
+    }
+
+    #resultat {
+        max-width: 100%;
+        max-height: 88vh;
+        padding: 28px 18px;
+        border-radius: 18px;
+    }
+
+    #resultat h2 {
+        font-size: 21px;
+        padding: 0 20px;
+    }
+
+    .rapport-icon {
+        font-size: 36px;
+    }
+
+    .score-container {
+        width: 105px;
+        height: 105px;
+    }
+
+    #score {
+        font-size: 23px;
+    }
+
+    .rapport-details {
+        font-size: 14px;
+    }
+
+    .score-label {
+        font-size: 15px;
+    }
+}
     </style>
 </head>
 
@@ -237,18 +408,52 @@ son analyse de plagiat.
         >
 
         <div id="fileName"></div>
-<div id="resultat" style="display:none; margin:35px auto 0; max-width:600px; padding:35px; background:white; border-radius:18px; box-shadow:0 8px 25px rgba(0,0,0,0.10); text-align:center;">
+<div id="rapportOverlay">
 
-   <h2 style="font-size:28px; margin-bottom:25px;">
-    📊 Rapport de détection du plagiat
-</h2>
+    <div id="resultat">
 
-    <p id="details" style="font-size:17px; color:#5d6678; margin-bottom:20px;">
-    </p>
+        <button id="fermerRapport" type="button">×</button>
 
-    <div style="font-size:42px; font-weight:bold; color:#173f8a; margin:20px;">
-        <span id="score">0 %</span>
+        <div class="rapport-icon">
+            📊
+        </div>
+
+        <h2>
+            Rapport de détection du plagiat
+        </h2>
+
+        <p id="details" class="rapport-details"></p>
+
+        <div class="score-container">
+            <span id="score">0 %</span>
+        </div>
+
+        <p class="score-label">
+            Taux de plagiat détecté
+        </p>
+
+        <div id="passages">
+
+            <h3>
+                🔎 Passages potentiellement plagiés
+            </h3>
+
+            <div id="listePassages"></div>
+
+        </div>
+
+        <div class="rapport-warning">
+            ⚠️ Ce résultat est une estimation du prototype.
+            Il ne constitue pas encore une preuve de plagiat.
+        </div>
+
+        <button id="fermerRapportBas" class="button" type="button">
+            Fermer le rapport
+        </button>
+
     </div>
+
+</div>
 <div id="passages" style="display:none; margin-top:25px; text-align:left;">
 
     <h3 style="color:#173f8a; margin-bottom:15px;">
@@ -324,21 +529,56 @@ function analyser() {
 
     const fichier = documentInput.files[0];
 
-    document.getElementById("resultat").style.display = "block";
+    const overlay =
+        document.getElementById("rapportOverlay");
 
-    document.getElementById("details").textContent =
+    const details =
+        document.getElementById("details");
+
+    const score =
+        document.getElementById("score");
+
+    const passages =
+        document.getElementById("passages");
+
+    const listePassages =
+        document.getElementById("listePassages");
+
+    overlay.style.display = "flex";
+
+    details.textContent =
         "Document reçu : " + fichier.name;
 
-    document.getElementById("score").textContent =
-        "Analyse en préparation";
+    score.textContent =
+        "Analyse...";
 
-    document.getElementById("passages").style.display = "block";
+    passages.style.display = "block";
 
-    document.getElementById("listePassages").innerHTML =
-        "<p>🔎 Le moteur de détection de plagiat sera intégré prochainement.</p>";
+    listePassages.innerHTML =
+        "<p>⏳ Analyse de votre document en cours...</p>";
 
-}    
-            
+    setTimeout(function() {
+
+        score.textContent =
+            "Analyse en préparation";
+
+        listePassages.innerHTML =
+            "<p>🔎 Le moteur de détection de plagiat sera intégré prochainement.</p>";
+
+    }, 1000);
+
+}
+    document.getElementById("fermerRapport").addEventListener("click", function() {
+
+    document.getElementById("rapportOverlay").style.display = "none";
+
+});
+
+document.getElementById("fermerRapportBas").addEventListener("click", function() {
+
+    document.getElementById("rapportOverlay").style.display = "none";
+
+});
   </script>
 <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
 <script src="assistant-ia.js"></script>
