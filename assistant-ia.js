@@ -74,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
             border-radius: 12px;
             line-height: 1.5;
             font-size: 14px;
+            white-space: pre-wrap;
         }
 
         .originalis-ai-bot {
@@ -85,6 +86,12 @@ document.addEventListener("DOMContentLoaded", function () {
             background: #173f8a;
             color: white;
             margin-left: 35px;
+        }
+
+        .originalis-ai-loading {
+            background: white;
+            color: #6b7280;
+            font-style: italic;
         }
 
         #originalis-ai-input-area {
@@ -103,6 +110,10 @@ document.addEventListener("DOMContentLoaded", function () {
             outline: none;
         }
 
+        #originalis-ai-input:focus {
+            border-color: #173f8a;
+        }
+
         #originalis-ai-send {
             border: none;
             border-radius: 9px;
@@ -111,6 +122,11 @@ document.addEventListener("DOMContentLoaded", function () {
             color: white;
             cursor: pointer;
             font-weight: bold;
+        }
+
+        #originalis-ai-send:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         @media (max-width: 600px) {
@@ -150,7 +166,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <div id="originalis-ai-header">
 
-            <strong>🤖 Assistant Originalis</strong>
+            <strong>
+                🤖 Assistant Originalis
+            </strong>
 
             <button
                 id="originalis-ai-close"
@@ -161,15 +179,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         </div>
 
+
         <div id="originalis-ai-messages">
 
             <div class="originalis-ai-message originalis-ai-bot">
-                Bonjour 👋<br><br>
+
+                Bonjour 👋
+
                 Je suis l'assistant Originalis.
-                Comment puis-je vous aider ?
+                Posez-moi votre question.
+
             </div>
 
         </div>
+
 
         <div id="originalis-ai-input-area">
 
@@ -177,6 +200,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 type="text"
                 id="originalis-ai-input"
                 placeholder="Écrivez votre question..."
+                autocomplete="off"
             >
 
             <button
@@ -187,50 +211,70 @@ document.addEventListener("DOMContentLoaded", function () {
             </button>
 
         </div>
+
     `;
 
     document.body.appendChild(windowAI);
 
 
-    button.addEventListener("click", function () {
+    const closeButton =
+        document.getElementById(
+            "originalis-ai-close"
+        );
 
-        if (windowAI.style.display === "flex") {
-
-            windowAI.style.display = "none";
-
-        } else {
-
-            windowAI.style.display = "flex";
-
-            document.getElementById(
-                "originalis-ai-input"
-            ).focus();
-
-        }
-
-    });
-
-
-    document.getElementById(
-        "originalis-ai-close"
-    ).addEventListener("click", function () {
-
-        windowAI.style.display = "none";
-
-    });
-
-
-    function envoyerMessage() {
-
-        const input = document.getElementById(
+    const input =
+        document.getElementById(
             "originalis-ai-input"
         );
 
-        const messages = document.getElementById(
+    const sendButton =
+        document.getElementById(
+            "originalis-ai-send"
+        );
+
+    const messages =
+        document.getElementById(
             "originalis-ai-messages"
         );
 
-        const question = input.value.trim();
+
+    button.addEventListener(
+        "click",
+        function () {
+
+            if (
+                windowAI.style.display === "flex"
+            ) {
+
+                windowAI.style.display = "none";
+
+            } else {
+
+                windowAI.style.display = "flex";
+
+                input.focus();
+
+            }
+
+        }
+    );
+
+
+    closeButton.addEventListener(
+        "click",
+        function () {
+
+            windowAI.style.display = "none";
+
+        }
+    );
+
+
+    async function envoyerMessage() {
+
+        const question =
+            input.value.trim();
+
 
         if (!question) {
             return;
@@ -253,19 +297,121 @@ document.addEventListener("DOMContentLoaded", function () {
 
         input.value = "";
 
+        sendButton.disabled = true;
 
-        const messageBot =
+        input.disabled = true;
+
+
+        const messageChargement =
             document.createElement("div");
 
-        messageBot.className =
-            "originalis-ai-message originalis-ai-bot";
+        messageChargement.className =
+            "originalis-ai-message originalis-ai-loading";
 
-        messageBot.textContent =
-            "🤖 Je suis actuellement en mode démonstration. La connexion à l'intelligence artificielle sera ajoutée prochainement.";
+        messageChargement.textContent =
+            "🤖 Réflexion en cours...";
 
         messages.appendChild(
-            messageBot
+            messageChargement
         );
+
+
+        messages.scrollTop =
+            messages.scrollHeight;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "https://mrzsmkrgwlmaloljvfsr.supabase.co/functions/v1/super-function",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            question: question
+                        })
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            messageChargement.remove();
+
+
+            const messageBot =
+                document.createElement("div");
+
+            messageBot.className =
+                "originalis-ai-message originalis-ai-bot";
+
+
+            if (
+                response.ok &&
+                data.answer
+            ) {
+
+                messageBot.textContent =
+                    data.answer;
+
+            } else {
+
+                messageBot.textContent =
+                    "❌ Désolé, je n'ai pas pu répondre à votre question.";
+
+                console.error(
+                    "Erreur Assistant Originalis :",
+                    data
+                );
+
+            }
+
+
+            messages.appendChild(
+                messageBot
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Erreur de connexion :",
+                error
+            );
+
+
+            messageChargement.remove();
+
+
+            const messageErreur =
+                document.createElement("div");
+
+            messageErreur.className =
+                "originalis-ai-message originalis-ai-bot";
+
+            messageErreur.textContent =
+                "❌ Impossible de contacter l'assistant. Vérifiez votre connexion Internet.";
+
+            messages.appendChild(
+                messageErreur
+            );
+
+        }
+
+
+        sendButton.disabled = false;
+
+        input.disabled = false;
+
+        input.focus();
 
 
         messages.scrollTop =
@@ -274,21 +420,21 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    document.getElementById(
-        "originalis-ai-send"
-    ).addEventListener(
+    sendButton.addEventListener(
         "click",
         envoyerMessage
     );
 
 
-    document.getElementById(
-        "originalis-ai-input"
-    ).addEventListener(
+    input.addEventListener(
         "keydown",
         function (event) {
 
-            if (event.key === "Enter") {
+            if (
+                event.key === "Enter"
+            ) {
+
+                event.preventDefault();
 
                 envoyerMessage();
 
