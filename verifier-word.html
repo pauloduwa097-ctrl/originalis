@@ -160,15 +160,6 @@
             id="document"
             accept=".pdf,.doc,.docx,.txt"
         >
-<p style="margin-top:30px; font-weight:bold;">
-    📚 Sélectionnez le document de référence
-</p>
-
-<input
-    type="file"
-    id="reference"
-    accept=".txt"
->
 
         <div id="fileName"></div>
 <div id="resultat" style="display:none; margin:35px auto 0; max-width:600px; padding:35px; background:white; border-radius:18px; box-shadow:0 8px 25px rgba(0,0,0,0.10); text-align:center;">
@@ -236,7 +227,6 @@
 <script>
 
     const documentInput = document.getElementById("document");
-const referenceInput = document.getElementById("reference");
     const fileName = document.getElementById("fileName");
 
     documentInput.addEventListener("change", function() {
@@ -257,14 +247,8 @@ function analyser() {
         return;
     }
 
-    if (referenceInput.files.length === 0) {
-        alert("Veuillez sélectionner le document de référence.");
-        return;
-    }
-
     const fichier = documentInput.files[0];
-    const reference = referenceInput.files[0];
-
+    
     function lireFichier(fichier, callback) {
 
         const nom = fichier.name.toLowerCase();
