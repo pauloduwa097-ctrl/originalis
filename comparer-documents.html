@@ -1096,34 +1096,31 @@ function calculerSimilarite(
 
 async function comparerDocuments() {
 
+    /* =========================
+       VÉRIFICATION DOCUMENT A
+    ========================= */
 
-    /* VÉRIFIER DOCUMENT A */
-
-    if (
-        documentA.files.length === 0
-    ) {
+    if (documentA.files.length === 0) {
 
         alert(
             "Veuillez sélectionner le Document A."
         );
 
         return;
-
     }
 
 
-    /* VÉRIFIER DOCUMENT B */
+    /* =========================
+       VÉRIFICATION DOCUMENT B
+    ========================= */
 
-    if (
-        documentB.files.length === 0
-    ) {
+    if (documentB.files.length === 0) {
 
         alert(
             "Veuillez sélectionner le Document B."
         );
 
         return;
-
     }
 
 
@@ -1134,13 +1131,13 @@ async function comparerDocuments() {
         documentB.files[0];
 
 
-    /* OUVRIR LE RAPPORT */
+    /* =========================
+       OUVRIR LE RAPPORT
+    ========================= */
 
-    overlay.style.display =
-        "flex";
+    overlay.style.display = "flex";
 
-    document.body.style.overflow =
-        "hidden";
+    document.body.style.overflow = "hidden";
 
 
     details.textContent =
@@ -1168,38 +1165,36 @@ async function comparerDocuments() {
 
     try {
 
-
-        /* LIRE A */
+        /* =========================
+           LIRE DOCUMENT A
+        ========================= */
 
         const texteA =
-            await lireFichier(
-                fichierA
-            );
+            await lireFichier(fichierA);
 
 
-        /* LIRE B */
+        /* =========================
+           LIRE DOCUMENT B
+        ========================= */
 
         const texteB =
-            await lireFichier(
-                fichierB
-            );
+            await lireFichier(fichierB);
 
 
-        /* OBTENIR LES MOTS */
+        /* =========================
+           EXTRAIRE LES MOTS
+        ========================= */
 
         const motsA =
-            obtenirMots(
-                texteA
-            );
-
+            obtenirMots(texteA);
 
         const motsB =
-            obtenirMots(
-                texteB
-            );
+            obtenirMots(texteB);
 
 
-        /* VÉRIFIER LE CONTENU */
+        /* =========================
+           VÉRIFIER LES DOCUMENTS
+        ========================= */
 
         if (
             motsA.length < 3 ||
@@ -1209,17 +1204,16 @@ async function comparerDocuments() {
             score.textContent =
                 "0 %";
 
-
             listePassages.innerHTML =
-                "<p>⚠️ L'un des documents ne contient pas suffisamment de texte pour effectuer la comparaison.</p>";
-
+                "<p>⚠️ Les documents doivent contenir suffisamment de texte pour être comparés.</p>";
 
             return;
-
         }
 
 
-        /* GROUPES A */
+        /* =========================
+           GROUPES DE 3 MOTS
+        ========================= */
 
         const groupesA =
             obtenirGroupes(
@@ -1227,8 +1221,6 @@ async function comparerDocuments() {
                 3
             );
 
-
-        /* GROUPES B */
 
         const groupesB =
             new Set(
@@ -1239,33 +1231,37 @@ async function comparerDocuments() {
             );
 
 
-        /* CORRESPONDANCES */
+        /* =========================
+           RECHERCHER LES CORRESPONDANCES
+        ========================= */
 
         const groupesCommuns = [];
 
 
-        groupesA.forEach(function(groupe) {
-
-            if (
-                groupesB.has(groupe)
-            ) {
+        groupesA.forEach(
+            function(groupe) {
 
                 if (
-                    !groupesCommuns.includes(groupe)
+                    groupesB.has(groupe)
                 ) {
 
-                    groupesCommuns.push(
-                        groupe
-                    );
+                    if (
+                        !groupesCommuns.includes(groupe)
+                    ) {
+
+                        groupesCommuns.push(groupe);
+
+                    }
 
                 }
 
             }
+        );
 
-        });
 
-
-        /* CALCUL DU SCORE */
+        /* =========================
+           CALCUL DU TAUX
+        ========================= */
 
         let similarite = 0;
 
@@ -1276,13 +1272,10 @@ async function comparerDocuments() {
 
             similarite =
                 Math.round(
-
                     (
                         groupesCommuns.length /
                         groupesA.length
-
                     ) * 100
-
                 );
 
         }
@@ -1297,16 +1290,19 @@ async function comparerDocuments() {
         }
 
 
-        /* AFFICHER LE SCORE */
+        /* =========================
+           AFFICHER LE SCORE
+        ========================= */
 
         score.textContent =
             similarite + " %";
 
 
-        /* AFFICHER LES CORRESPONDANCES */
+        /* =========================
+           AFFICHER LES CORRESPONDANCES
+        ========================= */
 
-        listePassages.innerHTML =
-            "";
+        listePassages.innerHTML = "";
 
 
         if (
@@ -1322,28 +1318,37 @@ async function comparerDocuments() {
 
             groupesCommuns
                 .slice(0, 20)
-                .forEach(function(groupe, index) {
+                .forEach(
+                    function(
+                        groupe,
+                        index
+                    ) {
 
-                    const bloc =
-                        document.createElement("div");
-
-
-                    bloc.className =
-                        "passage";
-
-
-                    bloc.textContent =
-                        (index + 1) +
-                        ". « " +
-                        groupe +
-                        " »";
+                        const bloc =
+                            document.createElement(
+                                "div"
+                            );
 
 
-                    listePassages.appendChild(
-                        bloc
-                    );
+                        bloc.className =
+                            "passage";
 
-                });
+
+                        bloc.textContent =
+                            (
+                                index + 1
+                            ) +
+                            ". « " +
+                            groupe +
+                            " »";
+
+
+                        listePassages.appendChild(
+                            bloc
+                        );
+
+                    }
+                );
 
         }
 
@@ -1353,7 +1358,7 @@ async function comparerDocuments() {
     catch (error) {
 
         console.error(
-            "Erreur Originalis :",
+            "Erreur de comparaison :",
             error
         );
 
@@ -1363,7 +1368,7 @@ async function comparerDocuments() {
 
 
         listePassages.innerHTML =
-            "<p>❌ Impossible de lire l'un des documents. Vérifiez que les fichiers sont bien au format TXT ou DOCX.</p>";
+            "<p>❌ Impossible de lire ou de comparer l'un des documents.</p>";
 
     }
 
@@ -1379,7 +1384,7 @@ async function comparerDocuments() {
 
 
 /* =========================
-   ACTIVER LE BOUTON
+   BOUTON COMPARER
 ========================= */
 
 boutonComparer.addEventListener(
@@ -1403,7 +1408,9 @@ function fermerRapport() {
 }
 
 
-/* BOUTON X */
+/* =========================
+   BOUTON X
+========================= */
 
 document
     .getElementById("fermerRapport")
@@ -1413,7 +1420,9 @@ document
     );
 
 
-/* BOUTON DU BAS */
+/* =========================
+   BOUTON FERMER DU BAS
+========================= */
 
 document
     .getElementById("fermerRapportBas")
@@ -1423,7 +1432,10 @@ document
     );
 
 
-/* CLIQUER SUR L'ARRIÈRE-PLAN */
+/* =========================
+   FERMER EN CLIQUANT
+   SUR L'ARRIÈRE-PLAN
+========================= */
 
 overlay.addEventListener(
     "click",
@@ -1441,7 +1453,9 @@ overlay.addEventListener(
 );
 
 
-/* TOUCHE ÉCHAP */
+/* =========================
+   FERMER AVEC ÉCHAP
+========================= */
 
 document.addEventListener(
     "keydown",
@@ -1457,14 +1471,11 @@ document.addEventListener(
 
     }
 );
-
-</script>
-
-
-<!-- ASSISTANT IA -->
+    <!-- =========================
+     ASSISTANT IA
+========================= -->
 
 <script src="assistant-ia.js"></script>
-
 
 </body>
 
