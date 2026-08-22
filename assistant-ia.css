@@ -1,0 +1,133 @@
+#originalis-ai-button {
+    position: fixed;
+    right: 22px;
+    bottom: 22px;
+    width: 62px;
+    height: 62px;
+    border: none;
+    border-radius: 50%;
+    background: #173f8a;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.20);
+    z-index: 9998;
+}
+
+#originalis-ai-button:hover {
+    transform: translateY(-3px) scale(1.04);
+}
+
+#originalis-ai-window {
+    position: fixed;
+    right: 22px;
+    bottom: 96px;
+    width: 360px;
+    max-width: calc(100vw - 30px);
+    height: 500px;
+    background: white;
+    border-radius: 18px;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.22);
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    z-index: 9999;
+    border: 1px solid #e5e7eb;
+}
+
+.ai-header {
+    background: #173f8a;
+    color: white;
+    padding: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ai-title {
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.ai-status {
+    font-size: 12px;
+    opacity: 0.85;
+    margin-top: 3px;
+}
+
+#ai-close {
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.ai-messages {
+    flex: 1;
+    padding: 18px;
+    overflow-y: auto;
+    background: #f5f7fb;
+}
+
+.ai-message {
+    max-width: 85%;
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    font-size: 14px;
+}
+
+.ai-message.bot {
+    background: white;
+    color: #172033;
+    border: 1px solid #e5e7eb;
+}
+
+.ai-message.user {
+    background: #173f8a;
+    color: white;
+    margin-left: auto;
+}
+
+.ai-input-area {
+    padding: 12px;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    gap: 8px;
+}
+
+#ai-input {
+    flex: 1;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    padding: 11px;
+    outline: none;
+    font-size: 14px;
+}
+
+#ai-send {
+    border: none;
+    background: #173f8a;
+    color: white;
+    border-radius: 10px;
+    padding: 0 15px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+@media (max-width: 500px) {
+    #originalis-ai-window {
+        right: 12px;
+        bottom: 90px;
+        width: calc(100vw - 24px);
+        height: 470px;
+    }
+
+    #originalis-ai-button {
+        right: 15px;
+        bottom: 15px;
+    }
+}
