@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <title>Vérifier le plagiat - Originalis</title>
 
     <style>
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -18,6 +20,10 @@
             background: #f5f7fb;
             color: #172033;
         }
+
+        /* =========================
+           HEADER
+        ========================= */
 
         header {
             background: white;
@@ -40,6 +46,10 @@
             color: #172033;
         }
 
+        /* =========================
+           CONTENU PRINCIPAL
+        ========================= */
+
         .container {
             max-width: 800px;
             margin: 70px auto;
@@ -58,6 +68,10 @@
             line-height: 1.6;
             margin-bottom: 35px;
         }
+
+        /* =========================
+           ZONE IMPORTATION
+        ========================= */
 
         .upload-box {
             background: white;
@@ -84,7 +98,19 @@
         input[type="file"] {
             margin: 15px 0;
             padding: 10px;
+            max-width: 100%;
         }
+
+        #fileName {
+            margin-top: 15px;
+            color: #173f8a;
+            font-weight: bold;
+            word-break: break-word;
+        }
+
+        /* =========================
+           BOUTONS
+        ========================= */
 
         .button {
             display: inline-block;
@@ -97,279 +123,337 @@
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .button:hover {
             background: #0f2d63;
         }
 
-        #fileName {
-            margin-top: 15px;
-            color: #173f8a;
-            font-weight: bold;
+        /* =========================
+           RAPPORT CENTRAL
+        ========================= */
+
+        #rapportOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(5px);
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            z-index: 9999;
         }
+
+        #resultat {
+            position: relative;
+
+            width: 100%;
+            max-width: 650px;
+
+            max-height: 90vh;
+            overflow-y: auto;
+
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.25);
+
+            text-align: center;
+
+            animation: apparitionRapport 0.25s ease;
+        }
+
+        @keyframes apparitionRapport {
+
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+        }
+
+        /* =========================
+           BOUTON FERMER
+        ========================= */
+
+        #fermerRapport {
+            position: absolute;
+
+            top: 15px;
+            right: 18px;
+
+            width: 38px;
+            height: 38px;
+
+            border: none;
+            border-radius: 50%;
+
+            background: #f1f3f6;
+
+            color: #172033;
+
+            font-size: 25px;
+
+            cursor: pointer;
+        }
+
+        #fermerRapport:hover {
+            background: #e5e7eb;
+        }
+
+        /* =========================
+           RAPPORT
+        ========================= */
+
+        .rapport-icon {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+        #resultat h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .rapport-details {
+            color: #5d6678;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* SCORE */
+
+        .score-container {
+            width: 130px;
+            height: 130px;
+
+            margin: 20px auto;
+
+            border-radius: 50%;
+
+            background: #f5f7fb;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border: 8px solid #173f8a;
+        }
+
+        #score {
+            font-size: 27px;
+            font-weight: bold;
+            color: #173f8a;
+        }
+
+        .score-label {
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        /* =========================
+           PASSAGES
+        ========================= */
+
+        #passages {
+            display: none;
+
+            margin-top: 25px;
+
+            text-align: left;
+        }
+
+        #passages h3 {
+            color: #173f8a;
+            margin-bottom: 15px;
+        }
+
+        #listePassages {
+            background: #f5f7fb;
+
+            padding: 18px;
+
+            border-radius: 12px;
+
+            line-height: 1.7;
+        }
+
+        /* =========================
+           AVERTISSEMENT
+        ========================= */
+
+        .rapport-warning {
+            margin-top: 25px;
+
+            padding: 15px;
+
+            background: #fff8e6;
+
+            border-radius: 10px;
+
+            color: #6b7280;
+
+            line-height: 1.5;
+
+            font-size: 14px;
+        }
+
+        #fermerRapportBas {
+            margin-top: 25px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
 
         footer {
             margin-top: 80px;
+
             background: #172033;
+
             color: white;
+
             text-align: center;
+
             padding: 25px;
         }
+
+        /* =========================
+           TELEPHONE
+        ========================= */
+
         @media (max-width: 600px) {
 
-    header {
-        padding: 12px 4%;
-    }
+            header {
+                padding: 12px 4%;
+            }
 
-    .logo {
-        font-size: 22px;
-    }
+            .logo {
+                font-size: 22px;
+            }
 
-    nav a {
-        margin-left: 8px;
-        font-size: 13px;
-    }
+            nav a {
+                margin-left: 8px;
+                font-size: 13px;
+            }
 
-    .container {
-        width: 100%;
-        margin: 35px auto;
-        padding: 12px;
-    }
+            .container {
+                width: 100%;
+                margin: 35px auto;
+                padding: 12px;
+            }
 
-    h1 {
-        font-size: 30px;
-        margin-bottom: 12px;
-    }
+            h1 {
+                font-size: 30px;
+                margin-bottom: 12px;
+            }
 
-    .description {
-        font-size: 16px;
-        margin-bottom: 25px;
-    }
+            .description {
+                font-size: 16px;
+                margin-bottom: 25px;
+            }
 
-    .upload-box {
-        padding: 30px 15px;
-        border-radius: 12px;
-    }
+            .upload-box {
+                padding: 30px 15px;
+                border-radius: 12px;
+            }
 
-    .upload-icon {
-        font-size: 40px;
-    }
+            .upload-icon {
+                font-size: 40px;
+            }
 
-    .upload-box h2 {
-        font-size: 20px;
-    }
+            .upload-box h2 {
+                font-size: 20px;
+            }
 
-    .upload-box p {
-        font-size: 14px;
-    }
+            .upload-box p {
+                font-size: 14px;
+            }
 
-    input[type="file"] {
-        max-width: 100%;
-        font-size: 13px;
-    }
+            input[type="file"] {
+                font-size: 13px;
+            }
 
-    .button {
-        padding: 12px 18px;
-        font-size: 14px;
-    }
+            .button {
+                padding: 12px 18px;
+                font-size: 14px;
+            }
 
-    #resultat {
-        padding: 22px !important;
-    }
+            /* RAPPORT SUR TELEPHONE */
 
-    #resultat h2 {
-        font-size: 22px !important;
-    }
+            #rapportOverlay {
+                padding: 12px;
+            }
 
-    #score {
-        font-size: 32px;
-    }
+            #resultat {
+                max-width: 100%;
+                max-height: 88vh;
 
-    footer {
-        margin-top: 45px;
-        padding: 20px 10px;
-        font-size: 13px;
-    }
-}
-        /* ============================= */
-/* RAPPORT CENTRAL ORIGINALIS     */
-/* ============================= */
+                padding: 28px 18px;
 
-#rapportOverlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(15, 23, 42, 0.65);
-    backdrop-filter: blur(4px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 9990;
-}
+                border-radius: 18px;
+            }
 
-#resultat {
-    position: relative;
-    width: 100%;
-    max-width: 650px;
-    max-height: 90vh;
-    overflow-y: auto;
-    background: white;
-    border-radius: 22px;
-    padding: 35px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-    text-align: center;
-    animation: apparitionRapport 0.25s ease;
-}
+            #resultat h2 {
+                font-size: 21px;
+                padding: 0 20px;
+            }
 
-@keyframes apparitionRapport {
-    from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.97);
-    }
+            .rapport-icon {
+                font-size: 36px;
+            }
 
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
+            .score-container {
+                width: 105px;
+                height: 105px;
+            }
 
-#fermerRapport {
-    position: absolute;
-    top: 15px;
-    right: 18px;
-    width: 38px;
-    height: 38px;
-    border: none;
-    border-radius: 50%;
-    background: #f1f3f6;
-    color: #172033;
-    font-size: 25px;
-    cursor: pointer;
-}
+            #score {
+                font-size: 23px;
+            }
 
-#fermerRapport:hover {
-    background: #e5e7eb;
-}
+            .rapport-details {
+                font-size: 14px;
+            }
 
-.rapport-icon {
-    font-size: 45px;
-    margin-bottom: 10px;
-}
+            .score-label {
+                font-size: 15px;
+            }
 
-#resultat h2 {
-    font-size: 28px;
-    margin-bottom: 20px;
-}
+            footer {
+                margin-top: 45px;
+                padding: 20px 10px;
+                font-size: 13px;
+            }
 
-.rapport-details {
-    color: #5d6678;
-    font-size: 16px;
-    margin-bottom: 20px;
-}
+        }
 
-.score-container {
-    width: 130px;
-    height: 130px;
-    margin: 20px auto;
-    border-radius: 50%;
-    background: #f5f7fb;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 8px solid #173f8a;
-}
-
-#score {
-    font-size: 27px;
-    font-weight: bold;
-    color: #173f8a;
-}
-
-.score-label {
-    font-size: 17px;
-    font-weight: bold;
-    margin-bottom: 25px;
-}
-
-#passages {
-    display: none;
-    margin-top: 25px;
-    text-align: left;
-}
-
-#passages h3 {
-    color: #173f8a;
-    margin-bottom: 15px;
-}
-
-#listePassages {
-    background: #f5f7fb;
-    padding: 18px;
-    border-radius: 12px;
-    line-height: 1.7;
-}
-
-.rapport-warning {
-    margin-top: 25px;
-    padding: 15px;
-    background: #fff8e6;
-    border-radius: 10px;
-    color: #6b7280;
-    line-height: 1.5;
-    font-size: 14px;
-}
-
-#fermerRapportBas {
-    margin-top: 25px;
-}
-
-@media (max-width: 600px) {
-
-    #rapportOverlay {
-        padding: 12px;
-    }
-
-    #resultat {
-        max-width: 100%;
-        max-height: 88vh;
-        padding: 28px 18px;
-        border-radius: 18px;
-    }
-
-    #resultat h2 {
-        font-size: 21px;
-        padding: 0 20px;
-    }
-
-    .rapport-icon {
-        font-size: 36px;
-    }
-
-    .score-container {
-        width: 105px;
-        height: 105px;
-    }
-
-    #score {
-        font-size: 23px;
-    }
-
-    .rapport-details {
-        font-size: 14px;
-    }
-
-    .score-label {
-        font-size: 15px;
-    }
-}
-        #rapportOverlay {
-    display: none;
-}
     </style>
+
 </head>
 
 <body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
 
 <header>
 
@@ -378,31 +462,58 @@
     </div>
 
     <nav>
-        <a href="index.html">Accueil</a>
-        <a href="verifier.html">Vérifier</a>
-        <a href="Tarifs.html">Tarifs</a>
-        <a href="Aide.html">Aide</a>
+
+        <a href="index.html">
+            Accueil
+        </a>
+
+        <a href="verifier.html">
+            Vérifier
+        </a>
+
+        <a href="Tarifs.html">
+            Tarifs
+        </a>
+
+        <a href="Aide.html">
+            Aide
+        </a>
+
     </nav>
 
 </header>
 
+
+<!-- =========================
+     CONTENU
+========================= -->
+
 <div class="container">
 
-  <h1>Vérifier le plagiat</h1>
+    <h1>
+        Vérifier le plagiat
+    </h1>
+
     <p class="description">
         Importez votre document afin de préparer
-son analyse de plagiat.
+        son analyse de plagiat.
     </p>
+
 
     <div class="upload-box">
 
-        <div class="upload-icon">📄</div>
+        <div class="upload-icon">
+            📄
+        </div>
 
-        <h2>Importez votre document</h2>
+        <h2>
+            Importez votre document
+        </h2>
 
         <p>
             Formats acceptés : PDF, Word et TXT
         </p>
+
 
         <input
             type="file"
@@ -410,30 +521,85 @@ son analyse de plagiat.
             accept=".pdf,.doc,.docx,.txt"
         >
 
+
         <div id="fileName"></div>
+
+
+        <button
+            class="button"
+            type="button"
+            onclick="analyser()"
+        >
+            🔎 Lancer l'analyse
+        </button>
+
+
+        <div style="margin-top:30px;">
+
+            <p style="color:#5d6678; margin-bottom:12px;">
+                Vous souhaitez comparer deux documents ?
+            </p>
+
+            <a
+                href="comparer-documents.html"
+                class="button"
+            >
+                📑 Comparer deux documents
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     RAPPORT CENTRAL
+========================= -->
+
 <div id="rapportOverlay">
 
     <div id="resultat">
 
-        <button id="fermerRapport" type="button">×</button>
+        <button
+            id="fermerRapport"
+            type="button"
+            aria-label="Fermer"
+        >
+            ×
+        </button>
+
 
         <div class="rapport-icon">
             📊
         </div>
 
+
         <h2>
             Rapport de détection du plagiat
         </h2>
 
-        <p id="details" class="rapport-details"></p>
+
+        <p
+            id="details"
+            class="rapport-details"
+        ></p>
+
 
         <div class="score-container">
-            <span id="score">0 %</span>
+
+            <span id="score">
+                0 %
+            </span>
+
         </div>
+
 
         <p class="score-label">
             Taux de plagiat détecté
         </p>
+
 
         <div id="passages">
 
@@ -441,64 +607,36 @@ son analyse de plagiat.
                 🔎 Passages potentiellement plagiés
             </h3>
 
+
             <div id="listePassages"></div>
 
         </div>
 
+
         <div class="rapport-warning">
+
             ⚠️ Ce résultat est une estimation du prototype.
             Il ne constitue pas encore une preuve de plagiat.
+
         </div>
 
-        <button id="fermerRapportBas" class="button" type="button">
+
+        <button
+            id="fermerRapportBas"
+            class="button"
+            type="button"
+        >
             Fermer le rapport
         </button>
 
     </div>
 
 </div>
-<div id="passages" style="display:none; margin-top:25px; text-align:left;">
 
-    <h3 style="color:#173f8a; margin-bottom:15px;">
-        🔎 Passages potentiellement plagiés
-    </h3>
 
-    <div id="listePassages"
-         style="background:#f5f7fb; padding:20px; border-radius:10px; line-height:1.7;">
-    </div>
-
-</div>
-
-    <p style="font-size:18px; font-weight:bold;">
-       Taux de plagiat détecté
-    </p>
-
-    <p style="margin-top:20px; color:#6b7280; line-height:1.6;">
-        ⚠️ Ce résultat est une estimation du prototype.
-        Il ne constitue pas encore une preuve de plagiat.
-    </p>
-
-</div>
-        <button class="button" onclick="analyser()">
-            🔎 Lancer l'analyse
-        </button>
-<div style="margin-top:30px;">
-
-    <p style="color:#5d6678; margin-bottom:12px;">
-        Vous souhaitez comparer deux documents ?
-    </p>
-
-    <a
-        href="comparer-documents.html"
-        class="button"
-        style="text-decoration:none;"
-    >
-        📑 Comparer deux documents
-    </a>
- </div>
-    </div>
-
-</div>
+<!-- =========================
+     FOOTER
+========================= -->
 
 <footer>
 
@@ -507,12 +645,28 @@ son analyse de plagiat.
     </p>
 
 </footer>
+
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
 <script>
 
-    const documentInput = document.getElementById("document");
-    const fileName = document.getElementById("fileName");
+const documentInput =
+    document.getElementById("document");
 
-    documentInput.addEventListener("change", function() {
+const fileName =
+    document.getElementById("fileName");
+
+
+/* =========================
+   AFFICHER LE NOM DU FICHIER
+========================= */
+
+documentInput.addEventListener(
+    "change",
+    function() {
 
         if (documentInput.files.length > 0) {
 
@@ -520,50 +674,109 @@ son analyse de plagiat.
                 "Document sélectionné : " +
                 documentInput.files[0].name;
 
+        } else {
+
+            fileName.textContent = "";
+
         }
 
-    });
+    }
+);
+
+
+/* =========================
+   LANCER L'ANALYSE
+========================= */
+
 function analyser() {
 
+    /* Vérification du fichier */
+
     if (documentInput.files.length === 0) {
-        alert("Veuillez sélectionner votre document.");
+
+        alert(
+            "Veuillez sélectionner votre document."
+        );
+
         return;
+
     }
 
-    const fichier = documentInput.files[0];
+
+    const fichier =
+        documentInput.files[0];
+
+
+    /* Récupération du rapport */
 
     const overlay =
-        document.getElementById("rapportOverlay");
+        document.getElementById(
+            "rapportOverlay"
+        );
 
     const details =
-        document.getElementById("details");
+        document.getElementById(
+            "details"
+        );
 
     const score =
-        document.getElementById("score");
+        document.getElementById(
+            "score"
+        );
 
     const passages =
-        document.getElementById("passages");
+        document.getElementById(
+            "passages"
+        );
 
     const listePassages =
-        document.getElementById("listePassages");
+        document.getElementById(
+            "listePassages"
+        );
+
+
+    /* OUVRIR LE RAPPORT AU CENTRE */
 
     overlay.style.display = "flex";
 
+
+    /* Empêcher le défilement de la page */
+
+    document.body.style.overflow = "hidden";
+
+
+    /* Informations du document */
+
     details.textContent =
-        "Document reçu : " + fichier.name;
+        "Document reçu : " +
+        fichier.name;
+
+
+    /* État de chargement */
 
     score.textContent =
         "Analyse...";
 
-    passages.style.display = "block";
+
+    passages.style.display =
+        "block";
+
 
     listePassages.innerHTML =
         "<p>⏳ Analyse de votre document en cours...</p>";
+
+
+    /*
+       Simulation temporaire.
+       Ton véritable moteur IA pourra
+       remplacer cette partie plus tard.
+    */
 
     setTimeout(function() {
 
         score.textContent =
             "Analyse en préparation";
+
 
         listePassages.innerHTML =
             "<p>🔎 Le moteur de détection de plagiat sera intégré prochainement.</p>";
@@ -571,19 +784,96 @@ function analyser() {
     }, 1000);
 
 }
-    document.getElementById("fermerRapport").addEventListener("click", function() {
 
-    document.getElementById("rapportOverlay").style.display = "none";
 
-});
+/* =========================
+   FERMER LE RAPPORT
+========================= */
 
-document.getElementById("fermerRapportBas").addEventListener("click", function() {
+function fermerRapport() {
 
-    document.getElementById("rapportOverlay").style.display = "none";
+    document.getElementById(
+        "rapportOverlay"
+    ).style.display = "none";
 
-});
-  </script>
+
+    /* Réactiver le défilement */
+
+    document.body.style.overflow = "";
+
+}
+
+
+/* Bouton X */
+
+document
+    .getElementById("fermerRapport")
+    .addEventListener(
+        "click",
+        fermerRapport
+    );
+
+
+/* Bouton Fermer le rapport */
+
+document
+    .getElementById("fermerRapportBas")
+    .addEventListener(
+        "click",
+        fermerRapport
+    );
+
+
+/* Fermer en cliquant sur l'arrière-plan */
+
+document
+    .getElementById("rapportOverlay")
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target ===
+                document.getElementById(
+                    "rapportOverlay"
+                )
+            ) {
+
+                fermerRapport();
+
+            }
+
+        }
+    );
+
+
+/* Fermer avec la touche Échap */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Escape") {
+
+            fermerRapport();
+
+        }
+
+    }
+);
+
+</script>
+
+
+<!-- Bibliothèque Word -->
+
 <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+
+
+<!-- Assistant IA -->
+
 <script src="assistant-ia.js"></script>
+
 </body>
+
 </html>
