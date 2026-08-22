@@ -638,24 +638,6 @@ profilePhotoInput.addEventListener("change", async function() {
     location.reload();
 });
 </script>
-    <div id="assistant-originalis-container"></div>
-
-<script>
-    fetch("assistant-ia.html")
-        .then(response => response.text())
-        .then(html => {
-
-            document.getElementById(
-                "assistant-originalis-container"
-            ).innerHTML = html;
-
-        })
-        .catch(error => {
-            console.error(
-                "Impossible de charger l'assistant Originalis :",
-                error
-            );
-        });
 </script>
 </body>
 </html>
