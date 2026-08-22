@@ -1,730 +1,937 @@
-<!DOCTYPE html><html lang="fr"><head>
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Comparer deux documents - Originalis</title>
 
-<style>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-    }
+    <title>Comparer deux documents - Originalis</title>
 
-    body {
-        font-family: Arial, sans-serif;
-        background: #f5f7fb;
-        color: #172033;
-    }
 
-    /* =========================
-       HEADER
-    ========================= */
+    <style>
 
-    header {
-        background: white;
-        padding: 20px 8%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-    }
-
-    .logo {
-        font-size: 28px;
-        font-weight: bold;
-        color: #173f8a;
-    }
-
-    nav a {
-        margin-left: 20px;
-        text-decoration: none;
-        color: #172033;
-    }
-
-    /* =========================
-       CONTENU
-    ========================= */
-
-    .container {
-        max-width: 900px;
-        margin: 60px auto;
-        padding: 20px;
-        text-align: center;
-    }
-
-    h1 {
-        font-size: 38px;
-        margin-bottom: 15px;
-    }
-
-    .description {
-        color: #5d6678;
-        font-size: 18px;
-        line-height: 1.6;
-        margin-bottom: 35px;
-    }
-
-    /* =========================
-       DOCUMENTS
-    ========================= */
-
-    .comparison-box {
-        display: flex;
-        gap: 25px;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-
-    .document-card {
-        background: white;
-        width: 100%;
-        max-width: 380px;
-        padding: 30px;
-        border-radius: 16px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-    }
-
-    .document-icon {
-        font-size: 45px;
-        margin-bottom: 15px;
-    }
-
-    .document-card h2 {
-        margin-bottom: 10px;
-    }
-
-    .document-card p {
-        color: #6b7280;
-        margin-bottom: 20px;
-    }
-
-    input[type="file"] {
-        width: 100%;
-        padding: 10px;
-    }
-
-    #nameA,
-    #nameB {
-        margin-top: 15px;
-        color: #173f8a;
-        font-weight: bold;
-        word-break: break-word;
-    }
-
-    /* =========================
-       BOUTONS
-    ========================= */
-
-    .button {
-        margin-top: 30px;
-        padding: 15px 35px;
-        background: #173f8a;
-        color: white;
-        border: none;
-        border-radius: 9px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-
-    .button:hover {
-        background: #0f2d63;
-    }
-
-    /* =========================
-       RAPPORT CENTRAL
-    ========================= */
-
-    #rapportOverlay {
-        position: fixed;
-        inset: 0;
-
-        background: rgba(15, 23, 42, 0.65);
-
-        backdrop-filter: blur(5px);
-
-        display: none;
-
-        align-items: center;
-        justify-content: center;
-
-        padding: 20px;
-
-        z-index: 9999;
-    }
-
-    #resultat {
-        position: relative;
-
-        width: 100%;
-        max-width: 650px;
-
-        max-height: 90vh;
-
-        overflow-y: auto;
-
-        background: white;
-
-        border-radius: 22px;
-
-        padding: 35px;
-
-        box-shadow:
-            0 20px 60px rgba(0,0,0,0.25);
-
-        text-align: center;
-
-        animation: apparitionRapport 0.25s ease;
-    }
-
-    @keyframes apparitionRapport {
-
-        from {
-            opacity: 0;
-            transform: translateY(20px) scale(0.97);
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            color: #172033;
         }
 
-    }
 
-    /* =========================
-       BOUTON FERMER
-    ========================= */
-
-    #fermerRapport {
-        position: absolute;
-
-        top: 15px;
-        right: 18px;
-
-        width: 38px;
-        height: 38px;
-
-        border: none;
-
-        border-radius: 50%;
-
-        background: #f1f3f6;
-
-        color: #172033;
-
-        font-size: 25px;
-
-        cursor: pointer;
-    }
-
-    #fermerRapport:hover {
-        background: #e5e7eb;
-    }
-
-    /* =========================
-       CONTENU DU RAPPORT
-    ========================= */
-
-    .rapport-icon {
-        font-size: 45px;
-        margin-bottom: 10px;
-    }
-
-    #resultat h2 {
-        font-size: 28px;
-        margin-bottom: 20px;
-    }
-
-    .rapport-details {
-        color: #5d6678;
-        font-size: 16px;
-        margin-bottom: 20px;
-        line-height: 1.5;
-    }
-
-    /* =========================
-       CERCLE DE SIMILITUDE
-    ========================= */
-
-    .score-container {
-        width: 145px;
-        height: 145px;
-
-        margin: 25px auto;
-
-        border-radius: 50%;
-
-        background: #f5f7fb;
-
-        display: flex;
-
-        align-items: center;
-        justify-content: center;
-
-        border: 8px solid #173f8a;
-
-        flex-shrink: 0;
-    }
-
-    #score {
-        display: block;
-
-        width: 100%;
-
-        text-align: center;
-
-        font-size: 22px;
-
-        line-height: 1.2;
-
-        font-weight: bold;
-
-        color: #173f8a;
-
-        padding: 10px;
-    }
-
-    .score-label {
-        font-size: 17px;
-        font-weight: bold;
-        margin-bottom: 25px;
-    }
-
-    /* =========================
-       PASSAGES
-    ========================= */
-
-    #passages {
-        display: none;
-
-        margin-top: 25px;
-
-        text-align: left;
-    }
-
-    #passages h3 {
-        color: #173f8a;
-        margin-bottom: 15px;
-    }
-
-    #listePassages {
-        background: #f5f7fb;
-
-        padding: 18px;
-
-        border-radius: 12px;
-
-        line-height: 1.7;
-    }
-
-    .passage {
-        background: white;
-
-        padding: 15px;
-
-        border-radius: 10px;
-
-        margin-bottom: 10px;
-
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-
-        word-break: break-word;
-    }
-
-    /* =========================
-       AVERTISSEMENT
-    ========================= */
-
-    .rapport-warning {
-        margin-top: 25px;
-
-        padding: 15px;
-
-        background: #fff8e6;
-
-        border-radius: 10px;
-
-        color: #6b7280;
-
-        line-height: 1.5;
-
-        font-size: 14px;
-    }
-
-    #fermerRapportBas {
-        margin-top: 25px;
-    }
-
-    /* =========================
-       FOOTER
-    ========================= */
-
-    footer {
-        margin-top: 80px;
-
-        background: #172033;
-
-        color: white;
-
-        text-align: center;
-
-        padding: 25px;
-    }
-
-    /* =========================
-       TELEPHONE
-    ========================= */
-
-    @media (max-width: 600px) {
+        /* =========================
+           HEADER
+        ========================= */
 
         header {
-            padding: 10px 4%;
+            background: white;
+            padding: 20px 8%;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         }
+
 
         .logo {
-            font-size: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            color: #173f8a;
         }
+
 
         nav a {
-            margin-left: 6px;
-            font-size: 12px;
+            margin-left: 20px;
+            text-decoration: none;
+            color: #172033;
         }
 
-        nav {
-            font-size: 12px;
+
+        nav a:hover {
+            color: #173f8a;
         }
+
+
+        /* =========================
+           CONTENU
+        ========================= */
 
         .container {
-            margin: 35px auto;
-            padding: 15px;
+            max-width: 900px;
+            margin: 60px auto;
+            padding: 20px;
+            text-align: center;
         }
+
 
         h1 {
-            font-size: 26px;
+            font-size: 38px;
+            margin-bottom: 15px;
         }
 
+
         .description {
+            color: #5d6678;
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 35px;
+        }
+
+
+        /* =========================
+           DOCUMENTS
+        ========================= */
+
+        .comparison-box {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+
+        .document-card {
+            background: white;
+
+            width: 100%;
+            max-width: 380px;
+
+            padding: 30px;
+
+            border-radius: 16px;
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,0.08);
+        }
+
+
+        .document-icon {
+            font-size: 45px;
+            margin-bottom: 15px;
+        }
+
+
+        .document-card h2 {
+            margin-bottom: 10px;
+        }
+
+
+        .document-card p {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+
+        input[type="file"] {
+            width: 100%;
+            padding: 10px;
+        }
+
+
+        #nameA,
+        #nameB {
+            margin-top: 15px;
+
+            color: #173f8a;
+
+            font-weight: bold;
+
+            word-break: break-word;
+        }
+
+
+        /* =========================
+           BOUTON
+        ========================= */
+
+        .button {
+            margin-top: 30px;
+
+            padding: 15px 35px;
+
+            background: #173f8a;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 9px;
+
             font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .button:hover {
+            background: #0f2d63;
+        }
+
+
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+
+        /* =========================
+           RAPPORT CENTRAL
+        ========================= */
+
+        #rapportOverlay {
+            position: fixed;
+            inset: 0;
+
+            background: rgba(15, 23, 42, 0.65);
+
+            backdrop-filter: blur(5px);
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            z-index: 9999;
+        }
+
+
+        #resultat {
+            position: relative;
+
+            width: 100%;
+            max-width: 650px;
+
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+            background: white;
+
+            border-radius: 22px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.25);
+
+            text-align: center;
+
+            animation: apparitionRapport 0.25s ease;
+        }
+
+
+        @keyframes apparitionRapport {
+
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+
+        }
+
+
+        /* =========================
+           BOUTON FERMER
+        ========================= */
+
+        #fermerRapport {
+            position: absolute;
+
+            top: 15px;
+            right: 18px;
+
+            width: 38px;
+            height: 38px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background: #f1f3f6;
+
+            color: #172033;
+
+            font-size: 25px;
+
+            cursor: pointer;
+        }
+
+
+        #fermerRapport:hover {
+            background: #e5e7eb;
+        }
+
+
+        /* =========================
+           RAPPORT
+        ========================= */
+
+        .rapport-icon {
+            font-size: 45px;
+            margin-bottom: 10px;
+        }
+
+
+        #resultat h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+
+        .rapport-details {
+            color: #5d6678;
+
+            font-size: 16px;
+
+            margin-bottom: 20px;
+
             line-height: 1.5;
+
+            word-break: break-word;
+        }
+
+
+        /* =========================
+           CERCLE DE SIMILITUDE
+        ========================= */
+
+        .score-container {
+            width: 145px;
+            height: 145px;
+
+            margin: 25px auto;
+
+            border-radius: 50%;
+
+            background: #f5f7fb;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border: 8px solid #173f8a;
+
+            flex-shrink: 0;
+
+            overflow: hidden;
+        }
+
+
+        #score {
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            width: 100%;
+            height: 100%;
+
+            text-align: center;
+
+            font-size: 22px;
+
+            line-height: 1.2;
+
+            font-weight: bold;
+
+            color: #173f8a;
+
+            padding: 12px;
+
+            word-break: break-word;
+        }
+
+
+        .score-label {
+            font-size: 17px;
+
+            font-weight: bold;
+
             margin-bottom: 25px;
         }
 
-        .document-card {
-            padding: 22px;
+
+        /* =========================
+           PASSAGES
+        ========================= */
+
+        #passages {
+            display: none;
+
+            margin-top: 25px;
+
+            text-align: left;
         }
 
-        .document-icon {
-            font-size: 38px;
+
+        #passages h3 {
+            color: #173f8a;
+
+            margin-bottom: 15px;
         }
 
-        .document-card h2 {
-            font-size: 20px;
+
+        #listePassages {
+            background: #f5f7fb;
+
+            padding: 18px;
+
+            border-radius: 12px;
+
+            line-height: 1.7;
         }
 
-        .document-card p {
+
+        .passage {
+            background: white;
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            margin-bottom: 10px;
+
+            box-shadow:
+                0 2px 8px rgba(0,0,0,0.05);
+
+            word-break: break-word;
+        }
+
+
+        /* =========================
+           AVERTISSEMENT
+        ========================= */
+
+        .rapport-warning {
+            margin-top: 25px;
+
+            padding: 15px;
+
+            background: #fff8e6;
+
+            border-radius: 10px;
+
+            color: #6b7280;
+
+            line-height: 1.5;
+
             font-size: 14px;
         }
 
-        input[type="file"] {
-            font-size: 13px;
+
+        #fermerRapportBas {
+            margin-top: 25px;
         }
 
-        .button {
-            padding: 12px 20px;
-            font-size: 14px;
-        }
 
-        /* RAPPORT MOBILE */
-
-        #rapportOverlay {
-            padding: 12px;
-        }
-
-        #resultat {
-            max-width: 100%;
-
-            max-height: 88vh;
-
-            padding: 28px 18px;
-
-            border-radius: 18px;
-        }
-
-        #resultat h2 {
-            font-size: 21px;
-
-            padding: 0 20px;
-        }
-
-        .rapport-icon {
-            font-size: 36px;
-        }
-
-        .score-container {
-            width: 115px;
-            height: 115px;
-
-            border-width: 7px;
-
-            margin: 20px auto;
-        }
-
-        #score {
-            font-size: 19px;
-
-            padding: 8px;
-        }
-
-        .rapport-details {
-            font-size: 14px;
-        }
-
-        .score-label {
-            font-size: 15px;
-        }
+        /* =========================
+           FOOTER
+        ========================= */
 
         footer {
-            padding: 20px 10px;
+            margin-top: 80px;
 
-            font-size: 13px;
+            background: #172033;
+
+            color: white;
+
+            text-align: center;
+
+            padding: 25px;
         }
 
-    }
 
-</style>
+        /* =========================
+           MOBILE
+        ========================= */
 
-</head><body><!-- =========================
+        @media (max-width: 600px) {
+
+            header {
+                padding: 10px 4%;
+            }
+
+
+            .logo {
+                font-size: 20px;
+            }
+
+
+            nav a {
+                margin-left: 6px;
+                font-size: 12px;
+            }
+
+
+            nav {
+                font-size: 12px;
+            }
+
+
+            .container {
+                margin: 35px auto;
+                padding: 15px;
+            }
+
+
+            h1 {
+                font-size: 26px;
+            }
+
+
+            .description {
+                font-size: 16px;
+
+                line-height: 1.5;
+
+                margin-bottom: 25px;
+            }
+
+
+            .document-card {
+                padding: 22px;
+            }
+
+
+            .document-icon {
+                font-size: 38px;
+            }
+
+
+            .document-card h2 {
+                font-size: 20px;
+            }
+
+
+            .document-card p {
+                font-size: 14px;
+            }
+
+
+            input[type="file"] {
+                font-size: 13px;
+            }
+
+
+            .button {
+                padding: 12px 20px;
+
+                font-size: 14px;
+            }
+
+
+            /* RAPPORT MOBILE */
+
+            #rapportOverlay {
+                padding: 12px;
+            }
+
+
+            #resultat {
+                max-width: 100%;
+
+                max-height: 88vh;
+
+                padding: 28px 18px;
+
+                border-radius: 18px;
+            }
+
+
+            #resultat h2 {
+                font-size: 21px;
+
+                padding: 0 20px;
+            }
+
+
+            .rapport-icon {
+                font-size: 36px;
+            }
+
+
+            .score-container {
+                width: 115px;
+                height: 115px;
+
+                border-width: 7px;
+
+                margin: 20px auto;
+            }
+
+
+            #score {
+                font-size: 18px;
+
+                padding: 8px;
+            }
+
+
+            .rapport-details {
+                font-size: 14px;
+            }
+
+
+            .score-label {
+                font-size: 15px;
+            }
+
+
+            footer {
+                padding: 20px 10px;
+
+                font-size: 13px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
      HEADER
-========================= --><header><div class="logo">
-    Originalis
-</div>
+========================= -->
 
-<nav>
+<header>
 
-    <a href="index.html">
-        Accueil
-    </a>
-
-    <a href="verifier.html">
-        Vérifier
-    </a>
-
-    <a href="tarifs.html">
-        Tarifs
-    </a>
-
-    <a href="aide.html">
-        Aide
-    </a>
-
-</nav>
-
-</header><!-- =========================
-     CONTENU PRINCIPAL
-========================= --><div class="container"><h1>
-    📑 Comparer deux documents
-</h1>
-
-<p class="description">
-    Importez deux documents afin de détecter
-    les similitudes entre leurs contenus.
-</p>
-
-
-<div class="comparison-box">
-
-
-    <!-- DOCUMENT A -->
-
-    <div class="document-card">
-
-        <div class="document-icon">
-            📄
-        </div>
-
-        <h2>
-            Document A
-        </h2>
-
-        <p>
-            Sélectionnez le premier document.
-        </p>
-
-        <input
-            type="file"
-            id="documentA"
-            accept=".txt,.docx"
-        >
-
-        <p id="nameA"></p>
-
+    <div class="logo">
+        Originalis
     </div>
 
 
-    <!-- DOCUMENT B -->
+    <nav>
 
-    <div class="document-card">
-
-        <div class="document-icon">
-            📚
-        </div>
-
-        <h2>
-            Document B
-        </h2>
-
-        <p>
-            Sélectionnez le document à comparer.
-        </p>
-
-        <input
-            type="file"
-            id="documentB"
-            accept=".txt,.docx"
-        >
-
-        <p id="nameB"></p>
-
-    </div>
-
-</div>
+        <a href="index.html">
+            Accueil
+        </a>
 
 
-<!-- BOUTON COMPARER -->
-
-<button
-    id="boutonComparer"
-    class="button"
-    type="button"
->
-    🔎 Comparer les documents
-</button>
-
-</div><!-- =========================
-     RAPPORT CENTRAL
-========================= --><div id="rapportOverlay"><div id="resultat">
+        <a href="verifier.html">
+            Vérifier
+        </a>
 
 
-    <!-- BOUTON FERMER -->
-
-    <button
-        id="fermerRapport"
-        type="button"
-        aria-label="Fermer le rapport"
-    >
-        ×
-    </button>
+        <a href="tarifs.html">
+            Tarifs
+        </a>
 
 
-    <div class="rapport-icon">
-        📊
-    </div>
+        <a href="aide.html">
+            Aide
+        </a>
+
+    </nav>
+
+</header>
 
 
-    <h2>
-        Rapport de comparaison
-    </h2>
+<!-- =========================
+     CONTENU
+========================= -->
+
+<div class="container">
 
 
-    <p
-        id="details"
-        class="rapport-details"
-    ></p>
+    <h1>
+        📑 Comparer deux documents
+    </h1>
 
 
-    <!-- CERCLE -->
-
-    <div class="score-container">
-
-        <span id="score">
-            Analyse...
-        </span>
-
-    </div>
-
-
-    <p class="score-label">
-        Taux de similitude détecté
+    <p class="description">
+        Importez deux documents afin de détecter
+        les similitudes entre leurs contenus.
     </p>
 
 
-    <!-- PASSAGES -->
+    <div class="comparison-box">
 
-    <div id="passages">
 
-        <h3>
-            🔎 Correspondances détectées
-        </h3>
+        <!-- DOCUMENT A -->
 
-        <div id="listePassages"></div>
+        <div class="document-card">
+
+            <div class="document-icon">
+                📄
+            </div>
+
+
+            <h2>
+                Document A
+            </h2>
+
+
+            <p>
+                Sélectionnez le premier document.
+            </p>
+
+
+            <input
+                type="file"
+                id="documentA"
+                accept=".txt,.docx"
+            >
+
+
+            <p id="nameA"></p>
+
+        </div>
+
+
+        <!-- DOCUMENT B -->
+
+        <div class="document-card">
+
+            <div class="document-icon">
+                📚
+            </div>
+
+
+            <h2>
+                Document B
+            </h2>
+
+
+            <p>
+                Sélectionnez le document à comparer.
+            </p>
+
+
+            <input
+                type="file"
+                id="documentB"
+                accept=".txt,.docx"
+            >
+
+
+            <p id="nameB"></p>
+
+        </div>
 
     </div>
 
 
-    <!-- AVERTISSEMENT -->
-
-    <div class="rapport-warning">
-
-        ⚠️ Ce résultat indique une similitude
-        détectée par le prototype. Il ne constitue
-        pas à lui seul une preuve définitive de plagiat.
-
-    </div>
-
-
-    <!-- FERMER -->
+    <!-- BOUTON COMPARER -->
 
     <button
-        id="fermerRapportBas"
+        id="boutonComparer"
         class="button"
         type="button"
     >
-        Fermer le rapport
+        🔎 Comparer les documents
     </button>
 
 
 </div>
 
-</div><!-- =========================
-     FOOTER
-========================= --><footer><p>
-    Originalis — L'originalité au service du savoir.
-</p>
 
-</footer><!-- =========================
+<!-- =========================
+     RAPPORT CENTRAL
+========================= -->
+
+<div id="rapportOverlay">
+
+
+    <div id="resultat">
+
+
+        <!-- FERMER -->
+
+        <button
+            id="fermerRapport"
+            type="button"
+            aria-label="Fermer le rapport"
+        >
+            ×
+        </button>
+
+
+        <div class="rapport-icon">
+            📊
+        </div>
+
+
+        <h2>
+            Rapport de comparaison
+        </h2>
+
+
+        <p
+            id="details"
+            class="rapport-details"
+        ></p>
+
+
+        <!-- CERCLE -->
+
+        <div class="score-container">
+
+            <span id="score">
+                Analyse...
+            </span>
+
+        </div>
+
+
+        <p class="score-label">
+            Taux de similitude détecté
+        </p>
+
+
+        <!-- PASSAGES -->
+
+        <div id="passages">
+
+            <h3>
+                🔎 Correspondances détectées
+            </h3>
+
+
+            <div id="listePassages"></div>
+
+        </div>
+
+
+        <!-- AVERTISSEMENT -->
+
+        <div class="rapport-warning">
+
+            ⚠️ Ce résultat indique une similitude
+            détectée par le prototype. Il ne constitue
+            pas à lui seul une preuve définitive de plagiat.
+
+        </div>
+
+
+        <!-- FERMER -->
+
+        <button
+            id="fermerRapportBas"
+            class="button"
+            type="button"
+        >
+            Fermer le rapport
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<footer>
+
+    <p>
+        Originalis — L'originalité au service du savoir.
+    </p>
+
+</footer>
+
+
+<!-- =========================
      BIBLIOTHÈQUE WORD
-========================= --><script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script><!-- =========================
+========================= -->
+
+<script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
+
+
+<!-- =========================
      JAVASCRIPT
-========================= --><script>
+========================= -->
+
+<script>
+
+
+/* =========================
+   RÉCUPÉRATION DES ÉLÉMENTS
+========================= */
 
 const documentA =
     document.getElementById("documentA");
 
+
 const documentB =
     document.getElementById("documentB");
 
+
 const nameA =
     document.getElementById("nameA");
+
 
 const nameB =
     document.getElementById("nameB");
 
 
+const boutonComparer =
+    document.getElementById("boutonComparer");
+
+
+const overlay =
+    document.getElementById("rapportOverlay");
+
+
+const details =
+    document.getElementById("details");
+
+
+const score =
+    document.getElementById("score");
+
+
+const passages =
+    document.getElementById("passages");
+
+
+const listePassages =
+    document.getElementById("listePassages");
+
+
 /* =========================
-   AFFICHER NOM DOCUMENT A
+   NOM DU DOCUMENT A
 ========================= */
 
 documentA.addEventListener(
     "change",
     function() {
 
-        if (documentA.files.length > 0) {
+        if (
+            documentA.files.length > 0
+        ) {
 
             nameA.textContent =
                 "Document sélectionné : " +
                 documentA.files[0].name;
 
-        } else {
+        }
+
+        else {
 
             nameA.textContent = "";
 
@@ -735,20 +942,24 @@ documentA.addEventListener(
 
 
 /* =========================
-   AFFICHER NOM DOCUMENT B
+   NOM DU DOCUMENT B
 ========================= */
 
 documentB.addEventListener(
     "change",
     function() {
 
-        if (documentB.files.length > 0) {
+        if (
+            documentB.files.length > 0
+        ) {
 
             nameB.textContent =
                 "Document sélectionné : " +
                 documentB.files[0].name;
 
-        } else {
+        }
+
+        else {
 
             nameB.textContent = "";
 
@@ -759,7 +970,7 @@ documentB.addEventListener(
 
 
 /* =========================
-   LIRE LES FICHIERS
+   LIRE UN FICHIER
 ========================= */
 
 function lireFichier(fichier) {
@@ -773,28 +984,39 @@ function lireFichier(fichier) {
 
             /* TXT */
 
-            if (nom.endsWith(".txt")) {
+            if (
+                nom.endsWith(".txt")
+            ) {
 
                 const lecteur =
                     new FileReader();
 
 
                 lecteur.onload =
-                    function(e) {
+                    function(event) {
 
                         resolve(
-                            e.target.result
+                            event.target.result
                         );
 
                     };
 
 
                 lecteur.onerror =
-                    reject;
+                    function() {
+
+                        reject(
+                            new Error(
+                                "Impossible de lire le fichier TXT."
+                            )
+                        );
+
+                    };
 
 
                 lecteur.readAsText(
-                    fichier
+                    fichier,
+                    "UTF-8"
                 );
 
             }
@@ -811,12 +1033,12 @@ function lireFichier(fichier) {
 
 
                 lecteur.onload =
-                    function(e) {
+                    function(event) {
 
                         mammoth
                             .extractRawText({
                                 arrayBuffer:
-                                    e.target.result
+                                    event.target.result
                             })
 
                             .then(
@@ -830,14 +1052,26 @@ function lireFichier(fichier) {
                             )
 
                             .catch(
-                                reject
+                                function(error) {
+
+                                    reject(error);
+
+                                }
                             );
 
                     };
 
 
                 lecteur.onerror =
-                    reject;
+                    function() {
+
+                        reject(
+                            new Error(
+                                "Impossible de lire le fichier Word."
+                            )
+                        );
+
+                    };
 
 
                 lecteur.readAsArrayBuffer(
@@ -847,13 +1081,13 @@ function lireFichier(fichier) {
             }
 
 
-            /* FORMAT INCONNU */
+            /* FORMAT NON SUPPORTÉ */
 
             else {
 
                 reject(
                     new Error(
-                        "Format non pris en charge."
+                        "Format non pris en charge. Utilisez TXT ou DOCX."
                     )
                 );
 
@@ -875,8 +1109,15 @@ function nettoyerTexte(texte) {
 
         .toLowerCase()
 
+        .normalize("NFD")
+
         .replace(
-            /[.,!?;:()"']/g,
+            /[\u0300-\u036f]/g,
+            ""
+        )
+
+        .replace(
+            /[.,!?;:()[\]{}"']/g,
             ""
         )
 
@@ -896,7 +1137,20 @@ function nettoyerTexte(texte) {
 
 function obtenirMots(texte) {
 
-    return nettoyerTexte(texte)
+    const texteNettoye =
+        nettoyerTexte(texte);
+
+
+    if (
+        texteNettoye.length === 0
+    ) {
+
+        return [];
+
+    }
+
+
+    return texteNettoye
 
         .split(" ")
 
@@ -912,7 +1166,7 @@ function obtenirMots(texte) {
 
 
 /* =========================
-   OBTENIR LES GROUPES
+   OBTENIR LES GROUPES DE 3 MOTS
 ========================= */
 
 function obtenirGroupes(
@@ -923,6 +1177,15 @@ function obtenirGroupes(
     const groupes = [];
 
 
+    if (
+        mots.length < taille
+    ) {
+
+        return groupes;
+
+    }
+
+
     for (
         let i = 0;
         i <= mots.length - taille;
@@ -930,15 +1193,12 @@ function obtenirGroupes(
     ) {
 
         groupes.push(
-
             mots
                 .slice(
                     i,
                     i + taille
                 )
-
                 .join(" ")
-
         );
 
     }
@@ -956,7 +1216,9 @@ function obtenirGroupes(
 async function comparerDocuments() {
 
 
-    /* Vérification A */
+    /* =========================
+       VÉRIFICATION A
+    ========================= */
 
     if (
         documentA.files.length === 0
@@ -971,14 +1233,12 @@ async function comparerDocuments() {
     }
 
 
-    /* Vérification B */
+    /* =========================
+       VÉRIFICATION B
+    ========================= */
 
     if (
-        documentB.files.length === 0
-    ) {
-
-        alert(
-            "Veuillez sélectionner le Document B."
+        documentB.
         );
 
         return;
@@ -989,6 +1249,7 @@ async function comparerDocuments() {
     const fichierA =
         documentA.files[0];
 
+
     const fichierB =
         documentB.files[0];
 
@@ -997,43 +1258,13 @@ async function comparerDocuments() {
        OUVRIR LE RAPPORT
     ========================= */
 
-    const overlay =
-        document.getElementById(
-            "rapportOverlay"
-        );
-
-    const details =
-        document.getElementById(
-            "details"
-        );
-
-    const score =
-        document.getElementById(
-            "score"
-        );
-
-    const passages =
-        document.getElementById(
-            "passages"
-        );
-
-    const listePassages =
-        document.getElementById(
-            "listePassages"
-        );
-
-
     overlay.style.display =
         "flex";
 
 
-    /* Bloquer le défilement */
-
     document.body.style.overflow =
         "hidden";
 
-
-    /* Informations */
 
     details.textContent =
         "Comparaison de : " +
@@ -1041,8 +1272,6 @@ async function comparerDocuments() {
         " et " +
         fichierB.name;
 
-
-    /* État de chargement */
 
     score.textContent =
         "Analyse...";
@@ -1056,11 +1285,17 @@ async function comparerDocuments() {
         "<p>⏳ Analyse des deux documents en cours...</p>";
 
 
+    /* Désactiver temporairement le bouton */
+
+    boutonComparer.disabled =
+        true;
+
+
     try {
 
 
         /* =========================
-           LECTURE
+           LECTURE DOCUMENT A
         ========================= */
 
         const texteA =
@@ -1068,6 +1303,10 @@ async function comparerDocuments() {
                 fichierA
             );
 
+
+        /* =========================
+           LECTURE DOCUMENT B
+        ========================= */
 
         const texteB =
             await lireFichier(
@@ -1092,7 +1331,33 @@ async function comparerDocuments() {
 
 
         /* =========================
-           GROUPES
+           VÉRIFICATION TEXTES VIDES
+        ========================= */
+
+        if (
+            motsA.length === 0 ||
+            motsB.length === 0
+        ) {
+
+            score.textContent =
+                "0 %";
+
+
+            listePassages.innerHTML =
+                "<p>⚠️ Impossible de comparer : l'un des documents ne contient pas suffisamment de texte.</p>";
+
+
+            boutonComparer.disabled =
+                false;
+
+
+            return;
+
+        }
+
+
+        /* =========================
+           GROUPES DOCUMENT A
         ========================= */
 
         const groupesA =
@@ -1101,6 +1366,10 @@ async function comparerDocuments() {
                 3
             );
 
+
+        /* =========================
+           GROUPES DOCUMENT B
+        ========================= */
 
         const groupesB =
             new Set(
@@ -1111,16 +1380,19 @@ async function comparerDocuments() {
             );
 
 
-        const groupesCommuns = [];
+        /* =========================
+           GROUPES COMMUNS
+        ========================= */
+
+        const groupesCommuns =
+            [];
 
 
         groupesA.forEach(
             function(groupe) {
 
                 if (
-                    groupesB.has(
-                        groupe
-                    )
+                    groupesB.has(groupe)
                 ) {
 
                     if (
@@ -1142,10 +1414,11 @@ async function comparerDocuments() {
 
 
         /* =========================
-           CALCUL SIMILITUDE
+           CALCUL
         ========================= */
 
-        let similarite = 0;
+        let similarite =
+            0;
 
 
         if (
@@ -1163,25 +1436,29 @@ async function comparerDocuments() {
         }
 
 
+        /* Limiter à 100 % */
+
         if (
             similarite > 100
         ) {
 
-            similarite = 100;
+            similarite =
+                100;
 
         }
 
 
         /* =========================
-           AFFICHER LE RÉSULTAT
+           AFFICHER LE SCORE
         ========================= */
 
         score.textContent =
-            similarite + " %";
+            similarite +
+            " %";
 
 
         /* =========================
-           CORRESPONDANCES
+           AFFICHER LES PASSAGES
         ========================= */
 
         listePassages.innerHTML =
@@ -1193,9 +1470,10 @@ async function comparerDocuments() {
         ) {
 
             listePassages.innerHTML =
-                "<p>Aucune correspondance détectée.</p>";
+                "<p>✅ Aucune correspondance détectée.</p>";
 
         }
+
 
         else {
 
@@ -1209,4 +1487,175 @@ async function comparerDocuments() {
                 .forEach(
                     function(
                         groupe,
-                        inde
+                        index
+                    ) {
+
+
+                        const bloc =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        bloc.className =
+                            "passage";
+
+
+                        bloc.textContent =
+                            (
+                                index + 1
+                            ) +
+                            ". « " +
+                            groupe +
+                            " »";
+
+
+                        listePassages.appendChild(
+                            bloc
+                        );
+
+                    }
+                );
+
+        }
+
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Erreur de comparaison :",
+            error
+        );
+
+
+        score.textContent =
+            "Erreur";
+
+
+        listePassages.innerHTML =
+            "<p>❌ Impossible de lire ou de comparer l'un des documents.</p>";
+
+
+    }
+
+
+    finally {
+
+        boutonComparer.disabled =
+            false;
+
+    }
+
+}
+
+
+/* =========================
+   BOUTON COMPARER
+========================= */
+
+boutonComparer.addEventListener(
+    "click",
+    comparerDocuments
+);
+
+
+/* =========================
+   FERMER LE RAPPORT
+========================= */
+
+function fermerRapport() {
+
+    overlay.style.display =
+        "none";
+
+
+    document.body.style.overflow =
+        "";
+
+}
+
+
+/* =========================
+   BOUTON X
+========================= */
+
+document
+    .getElementById(
+        "fermerRapport"
+    )
+    .addEventListener(
+        "click",
+        fermerRapport
+    );
+
+
+/* =========================
+   BOUTON FERMER DU BAS
+========================= */
+
+document
+    .getElementById(
+        "fermerRapportBas"
+    )
+    .addEventListener(
+        "click",
+        fermerRapport
+    );
+
+
+/* =========================
+   FERMER EN CLIQUANT
+   SUR L'ARRIÈRE-PLAN
+========================= */
+
+overlay.addEventListener(
+    "click",
+    function(event) {
+
+        if (
+            event.target === overlay
+        ) {
+
+            fermerRapport();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   FERMER AVEC ÉCHAP
+========================= */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Escape"
+        ) {
+
+            fermerRapport();
+
+        }
+
+    }
+);
+
+</script>
+
+
+<!-- =========================
+     ASSISTANT IA
+========================= -->
+
+<script src="assistant-ia.js"></script>
+
+
+</body>
+
+</html>
