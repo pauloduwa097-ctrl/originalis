@@ -243,205 +243,27 @@
 function analyser() {
 
     if (documentInput.files.length === 0) {
-        alert("Veuillez sélectionner le document à analyser.");
+        alert("Veuillez sélectionner votre document.");
         return;
     }
 
     const fichier = documentInput.files[0];
-    
-    function lireFichier(fichier, callback) {
 
-        const nom = fichier.name.toLowerCase();
+    document.getElementById("resultat").style.display = "block";
 
-        if (nom.endsWith(".txt")) {
+    document.getElementById("details").textContent =
+        "Document reçu : " + fichier.name;
 
-            const lecteur = new FileReader();
+    document.getElementById("score").textContent =
+        "Analyse en préparation";
 
-            lecteur.onload = function(e) {
-                callback(e.target.result);
-            };
+    document.getElementById("passages").style.display = "block";
 
-            lecteur.readAsText(fichier);
+    document.getElementById("listePassages").innerHTML =
+        "<p>🔎 Le moteur de détection de plagiat sera intégré prochainement.</p>";
 
-        } else if (nom.endsWith(".docx")) {
-
-            const lecteur = new FileReader();
-
-            lecteur.onload = function(e) {
-
-                mammoth.extractRawText({
-                    arrayBuffer: e.target.result
-                })
-                .then(function(result) {
-                    callback(result.value);
-                })
-                .catch(function(error) {
-
-                    console.error(error);
-
-                    alert("Impossible de lire le document Word.");
-
-                });
-
-            };
-
-            lecteur.readAsArrayBuffer(fichier);
-
-        } else {
-
-            alert("Format non pris en charge. Utilisez TXT ou Word (.docx).");
-
-        }
-    }
-
-
-    lireFichier(fichier, function(texteDocument) {
-
-        lireFichier(reference, function(texteReference) {
-
-            function nettoyerTexte(texte) {
-
-                return texte
-                    .toLowerCase()
-                    .replace(/[.,!?;:()"']/g, "")
-                    .replace(/\s+/g, " ")
-                    .trim();
-
-            }
-
-
-            function obtenirMots(texte) {
-
-                return nettoyerTexte(texte)
-                    .split(" ")
-                    .filter(mot => mot.length > 2);
-
-            }
-
-
-            function obtenirGroupes(mots, taille) {
-
-                const groupes = [];
-
-                for (let i = 0; i <= mots.length - taille; i++) {
-
-                    groupes.push(
-                        mots.slice(i, i + taille).join(" ")
-                    );
-
-                }
-
-                return groupes;
-
-            }
-
-
-            const motsDocument = obtenirMots(texteDocument);
-            const motsReference = obtenirMots(texteReference);
-
-
-            const groupesDocument =
-                obtenirGroupes(motsDocument, 3);
-
-            const groupesReference =
-                new Set(obtenirGroupes(motsReference, 3));
-
-
-            const groupesCommuns = [];
-
-
-            groupesDocument.forEach(function(groupe) {
-
-                if (groupesReference.has(groupe)) {
-
-                    if (!groupesCommuns.includes(groupe)) {
-                        groupesCommuns.push(groupe);
-                    }
-
-                }
-
-            });
-
-
-            let similarite = 0;
-
-
-            if (groupesDocument.length > 0) {
-
-                similarite = Math.round(
-                    (groupesCommuns.length /
-                    groupesDocument.length) * 100
-                );
-
-            }
-
-
-            if (similarite > 100) {
-                similarite = 100;
-            }
-
-
-            document.getElementById("resultat").style.display = "block";
-
-
-            document.getElementById("details").textContent =
-                "Document : " + fichier.name +
-                " | Référence : " + reference.name +
-                " | " + motsDocument.length +
-                " mots analysés.";
-
-
-            document.getElementById("score").textContent =
-                "Similarité : " + similarite + " %";
-
-
-            const zonePassages =
-                document.getElementById("passages");
-
-            const liste =
-                document.getElementById("listePassages");
-
-
-            zonePassages.style.display = "block";
-
-            liste.innerHTML = "";
-
-
-            if (groupesCommuns.length === 0) {
-
-                liste.innerHTML =
-                    "<p>Aucun groupe de mots similaire détecté.</p>";
-
-            } else {
-
-                groupesCommuns
-                    .slice(0, 20)
-                    .forEach(function(groupe, index) {
-
-                        const bloc =
-                            document.createElement("div");
-
-                        bloc.style.marginBottom = "12px";
-                        bloc.style.padding = "12px";
-                        bloc.style.background = "white";
-                        bloc.style.borderRadius = "8px";
-
-                        bloc.textContent =
-                            (index + 1) + ". « " +
-                            groupe +
-                            " »";
-
-                        liste.appendChild(bloc);
-
-                    });
-
-            }
-
-        });
-
-    });
-
-}
+}    
+            
   </script>
 <script src="https://unpkg.com/mammoth/mammoth.browser.min.js"></script>
 
